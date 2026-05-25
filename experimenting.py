@@ -8,15 +8,6 @@
 # differences in time (12am, verses 24:00, verses midnight, etc)
 # organizing things in order of time
 
-def createToDoList() -> list: 
-    """ This function creates an empty list that to do tasks will be included in. 
-    :return: (list) Returns an empty list 
-    >>> createToDoList()
-    []
-    """
-    todo_list = []
-    return todo_list
-
 def createToDo(day: str, time: str, category: str, description: str) -> dict: 
     """ This function takes the information of day, time, category, and description (all as strings) and makes a dictionary with the following keys: 'day', 'time', 
     'category', and 'description'. 
@@ -74,6 +65,55 @@ def viewList(todo_list: list) -> list:
 def main() ->  None: 
     """ This function handles user inputs and operations for the to do list 
     """
+    option = ""
+    todo_list = []
+    
+    initial = str(input("Do you want to use your to do list?:")).upper
+    if initial != "YES":
+       option = "QUIT"
+    else:
+        # the set up of the to do list is incorrect but idk why atm
+        todo_list = createToDoList() # figure this out (related to red scribbles under if statement) 
+    
+    while option != "QUIT":
+        option = input("Select an option (ADD, REMOVE, SHOW LIST: ").upper()        
 
+        if option == "ADD":
+            todo_list["day"] = day 
+            todo_list["time"] = time 
+            todo_list["category"] = category 
+            todo_list["description"] = description
+            task_entry = createToDo(day, time, category, description)
+            addTask(todo_list,task_entry)
+
+    # everything below this is from Alicia's HW 7 
+    
+    elif option == "REMOVE":
+      index = int(input("Which # would you like to remove? "))
+      removeBook(library, index)
+        
+    elif option == "PRINT":
+      printLibrary(library)
+        
+    elif option == "TITLES":
+      titles = getTitles(library)
+      for item in titles:
+          print(item, end="; ")
+      print("END")
+
+    elif option == "RECOMMEND":
+      print("I recommend you read", getRandomCitation(library))
+    
+    elif option == "SAVE":
+      save_option = input("Select an option (TITLES, ALL): ").upper()
+      file_name = input("Enter the files name to save the library (without an extension): ")
+      if save_option == "TITLES" and file_name:
+        saveToFile(library, False, file_name + ".txt")
+      elif save_option == "ALL":
+        saveToFile(library, True, file_name + ".txt")
+      else:
+        print("Invalid Input")
+
+  print("Goodbye!")
 
 # does this change show? 
