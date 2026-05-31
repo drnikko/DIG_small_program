@@ -3,10 +3,13 @@
 #       Name: Kiersten Conley
 # ------------------------------------------------------------------------------------------
 
-# THINGS I NEED TO FIGURE OUT 
-# capitalization
-# differences in time (12am, verses 24:00, verses midnight, etc)
-# organizing things in order of time
+day_order = {"MONDAY": 0, 
+             "TUESDAY": 1, 
+             "WEDNESDAY": 2, 
+             "THURSDAY": 3, 
+             "FRIDAY": 4, 
+             "SATURDAY": 5, 
+             "SUNDAY": 6}
 
 def createToDo(day: str, time: str, category: str, description: str) -> dict: 
     """ This function takes the information of day, time, category, and description (all as strings) and makes a dictionary with the following keys: 'day', 'time', 
@@ -27,6 +30,55 @@ def createToDo(day: str, time: str, category: str, description: str) -> dict:
     todo_dictionary["description"] = description
     return todo_dictionary # returns the to do list
 
+def convertTime(time_str: str) -> int: 
+   """
+   Converts times such as 12pm and 1:30pm into military time integers for sorting.
+   :param time_str: (str) User inputed time 
+   :return: (int) Military time integer
+   >>> convertTime(2pm)
+   1400
+   """
+   time_str = time_str.strip().lower()
+
+   # spliting am and pm
+   if "am" in time_str: 
+      period = "am"
+      time_str = time_str.replace("am", "")
+   else: 
+       period = "pm"
+       time_str = time_str.replace("pm", "")
+       
+   # hour/minute handling
+   if ":" in time_str: 
+      hour, minute = time_str.split(":")
+   else: 
+      hour = time_str
+      minute = "0"
+
+   hour = int(hour)
+   minute = int(minute)
+
+   if period == "pm" and hour != 12:
+      hour += 12
+   elif period == "am" and hour == 12:
+      hour = 0
+
+   return (hour * 60 + minute)
+
+def sortTasks(task: dict): 
+   """
+   Gives Python a sorting key for day and time 
+   :param task: (dict)
+   :return: 
+   :return: 
+   >>>
+   FINISH WRITING THIS
+
+   """
+   day_value = day_order[task["day"].upper()]
+   time_value = convertTime(task["time"]) # need to make function to convert time
+   return (day_value, time_value)
+
 def addTask(todo_list: list, task: dict) -> None: 
     """ This function adds a task to the to do list 
     :param todo_list: (list) List of to do tasks 
@@ -39,6 +91,7 @@ def addTask(todo_list: list, task: dict) -> None:
     'description': 'SDS assignment due'}, {'day': 'Sunday', 'time': '10am', 'category': 'Family', 'description': 'Brunch with Mom'}]
     """
     todo_list.append(task)
+    todo_list.sort(key=sortTasks)
 
 def removeTask(todo_list: list, index: int) -> None: 
     """ This function removes a task from the to do list 
@@ -60,60 +113,11 @@ def viewList(todo_list: list) -> list:
     [{'day': 'Monday', 'time': '12pm', 'category': 'Yardwork', 'description': 'Water the garden'}, {'day': 'Wednesday', 'time': '11:59pm', 'category':
     'School', 'description': 'SDS assignment due'}]
     """
-    return(todo_list) # I want them to be sorted by day and time
+    if len(todo_list) == 0: 
+        print("Your to do list is empty.")
+    else: 
+        return(todo_list)
 
 def main() ->  None: 
     """ This function handles user inputs and operations for the to do list 
     """
-    option = ""
-    todo_list = []
-    
-    initial = str(input("Do you want to use your to do list?:")).upper
-    if initial != "YES":
-       option = "QUIT"
-    else:
-        # the set up of the to do list is incorrect but idk why atm
-        todo_list = createToDoList() # figure this out (related to red scribbles under if statement) 
-    
-    while option != "QUIT":
-        option = input("Select an option (ADD, REMOVE, SHOW LIST: ").upper()        
-
-        if option == "ADD":
-            todo_list["day"] = day 
-            todo_list["time"] = time 
-            todo_list["category"] = category 
-            todo_list["description"] = description
-            task_entry = createToDo(day, time, category, description)
-            addTask(todo_list,task_entry)
-
-    # everything below this is from Alicia's HW 7 
-    
-    elif option == "REMOVE":
-      index = int(input("Which # would you like to remove? "))
-      removeBook(library, index)
-        
-    elif option == "PRINT":
-      printLibrary(library)
-        
-    elif option == "TITLES":
-      titles = getTitles(library)
-      for item in titles:
-          print(item, end="; ")
-      print("END")
-
-    elif option == "RECOMMEND":
-      print("I recommend you read", getRandomCitation(library))
-    
-    elif option == "SAVE":
-      save_option = input("Select an option (TITLES, ALL): ").upper()
-      file_name = input("Enter the files name to save the library (without an extension): ")
-      if save_option == "TITLES" and file_name:
-        saveToFile(library, False, file_name + ".txt")
-      elif save_option == "ALL":
-        saveToFile(library, True, file_name + ".txt")
-      else:
-        print("Invalid Input")
-
-  print("Goodbye!")
-
-# does this change show? 
