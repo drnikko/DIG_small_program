@@ -97,7 +97,7 @@ def removeTask(todo_list: list, index: int) -> None:
     """ This function removes a task from the to do list 
 
     """
-    if index in range (1, len(todo_list) - 1): # Checks if the task exists while translating from the user input to index notation
+    if index in range(1, len(todo_list) + 1): # Checks if the task exists while translating from the user input to index notation
         remove_this_task = todo_list[index -1 ] # Picks the task that is getting removed
         todo_list.remove(remove_this_task) # Removes the task from the to do list
     else: 
@@ -121,3 +121,57 @@ def viewList(todo_list: list) -> list:
 def main() ->  None: 
     """ This function handles user inputs and operations for the to do list 
     """
+    todo_list = []
+
+    while True: 
+        print("\nTO DO LIST")
+        print("1. Add Task")
+        print("2. Remove Task")
+        print("3. View Tasks")
+        print("4. Quit")
+
+        choice = input("Choose an option: ")
+
+        if choice == "1": 
+            day = input("Day: ")
+            time = input("Time (ex: 2pm, 1:30pm): ")
+            category = input("Category: ")
+            description = input("Description: ")
+
+            task = createToDo(day, time, category, description)
+            addTask(todo_list, task)
+
+            print("Task added.")
+        
+        elif choice == "2": 
+
+            if len(todo_list) == 0: 
+                print("Your to do list is empty. There is nothing to remove.")
+            else: 
+                print("/nCurrent Tasks:")
+
+                for i, task in enumerate(todo_list, start=1):
+                    print(f"{i}. {task['day']} {task['time']} - "
+                          f"{task['category']} - {task['description']}")
+                
+                index = int(input("Enter task number to remove: "))
+                removeTask(todo_list, index)
+        
+        elif choice == "3": 
+
+            if len(todo_list) == 0: 
+                print("Your to do list is empty.")
+            else: 
+                for i, task in enumerate(todo_list, start=1):
+                    print(f"{i}. {task['day']} {task['time']} - "
+                          f"{task['category']} - {task['description']}")
+        
+        elif choice == "4": 
+            print("Goodbye!")
+            break
+        
+        else: 
+            print("Invalid option. Please try again.")
+    
+if __name__ == "__main__":
+    main()
