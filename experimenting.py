@@ -3,6 +3,7 @@
 #       Name: Kiersten Conley
 # ------------------------------------------------------------------------------------------
 
+# creating variables for the numbers associated with each day
 day_order = {"MONDAY": 0, 
              "TUESDAY": 1, 
              "WEDNESDAY": 2, 
@@ -22,61 +23,62 @@ def createToDo(day: str, time: str, category: str, description: str) -> dict:
     >>> createToDoList("Monday", "12pm", "Yardwork", "Water the garden")
     {'day': 'Monday', 'time': '12pm', 'category': 'Yardwork', 'description': 'Water the garden'}
     """
-    todo_dictionary:dict = {} # creating dictionary that stores the to do list 
+    todo_dictionary:dict = {} # creating dictionary that stores a task
     # creating keys for values that the user will input
     todo_dictionary["day"] = day 
     todo_dictionary["time"] = time 
     todo_dictionary["category"] = category 
     todo_dictionary["description"] = description
-    return todo_dictionary # returns the to do list
+    return todo_dictionary # returns the task
 
 def convertTime(time_str: str) -> int: 
    """
-   Converts times such as 12pm and 1:30pm into military time integers for sorting.
+   Converts times (such as 12pm and 1:30pm) into an integer value for the number of minutes after midnight
    :param time_str: (str) User inputed time 
-   :return: (int) Military time integer
+   :return: (int) Number of minutes after midnight
    >>> convertTime(2pm)
-   1400
+   840
    """
-   time_str = time_str.strip().lower()
+   time_str = time_str.strip().lower() # breaks down the characters and makes everything lower case (if not already)
 
    # spliting am and pm
-   if "am" in time_str: 
+   if "am" in time_str: # if it's a morning time
       period = "am"
-      time_str = time_str.replace("am", "")
-   else: 
+      time_str = time_str.replace("am", "") # takes out am
+   else: # if it's an afternoon time
        period = "pm"
-       time_str = time_str.replace("pm", "")
+       time_str = time_str.replace("pm", "") # takes out pm
        
    # hour/minute handling
-   if ":" in time_str: 
-      hour, minute = time_str.split(":")
-   else: 
+   if ":" in time_str: # if theres a colon
+      hour, minute = time_str.split(":") # splits minutes and hours
+   else: # when there's no minutes
       hour = time_str
       minute = "0"
 
    hour = int(hour)
    minute = int(minute)
 
-   if period == "pm" and hour != 12:
+   if period == "pm" and hour != 12: # for pm times
       hour += 12
-   elif period == "am" and hour == 12:
+   elif period == "am" and hour == 12: # for am times
       hour = 0
 
-   return (hour * 60 + minute)
+   return (hour * 60 + minute) # number of hours * 60 minutes + number of minutes
 
-def sortTasks(task: dict): 
+def sortTasks(task: dict) -> tuple[int, int]: 
    """
    Gives Python a sorting key for day and time 
    :param task: (dict)
    :return: 
    :return: 
-   >>>
-   FINISH WRITING THIS
-
+   >>> myToDo = {'day': 'Wednesday', 'time': '11:59pm', 'category': 'School', 'description': 'SDS assignment}
+   >>> sortTasks(myToDo)
+   2 
+   2359
    """
-   day_value = day_order[task["day"].upper()]
-   time_value = convertTime(task["time"]) # need to make function to convert time
+   day_value = day_order[task["day"].upper()] # sorts days in order Mon-Sun. uses .upper() so 'Monday' and 'monday' aren't viewed differently.
+   time_value = convertTime(task["time"]) # sorts tasks by their military time
    return (day_value, time_value)
 
 def addTask(todo_list: list, task: dict) -> None: 
@@ -90,12 +92,17 @@ def addTask(todo_list: list, task: dict) -> None:
     [{'day': 'Monday', 'time': '12pm', 'category': 'Yardwork', 'description': 'Water the garden'}, {'day': 'Wednesday', 'time': '11:59pm', 'category': 'School', 
     'description': 'SDS assignment due'}, {'day': 'Sunday', 'time': '10am', 'category': 'Family', 'description': 'Brunch with Mom'}]
     """
-    todo_list.append(task)
-    todo_list.sort(key=sortTasks)
+    todo_list.append(task) # adds task to list
+    todo_list.sort(key=sortTasks) # sorts the task by day and time using the sortTasks function
 
 def removeTask(todo_list: list, index: int) -> None: 
     """ This function removes a task from the to do list 
-
+    :param todo_list: (list) User inputed list of to do tasks
+    :param index: (int) User inputed integer value, indicated the dictionary within the list
+    >>> myToDo = [{'day': 'Monday', 'time': '12pm', 'category': 'Yardwork', 'description': 'Water the garden'}, {'day': 'Wednesday', 'time': '11:59pm', 'category':
+    'School', 'description': 'SDS assignment due'}]
+    >>> removeTask(myToDo, 2)
+    [{'day': 'Monday', 'time': '12pm', 'category': 'Yardwork', 'description': 'Water the garden'}]
     """
     if index in range(1, len(todo_list) + 1): # Checks if the task exists while translating from the user input to index notation
         remove_this_task = todo_list[index -1 ] # Picks the task that is getting removed
@@ -103,25 +110,10 @@ def removeTask(todo_list: list, index: int) -> None:
     else: 
         print("This task does not exist.") # If the task does not exist
 
-def viewList(todo_list: list) -> list: 
-    """ This function shows the user to do list 
-    :param todo_list: (list) A list of to do tasks
-    :return: (list) List of specific tasks
-    >>> myToDo = [{'day': 'Monday', 'time': '12pm', 'category': 'Yardwork', 'description': 'Water the garden'}, {'day': 'Wednesday', 'time': '11:59pm', 'category':
-    'School', 'description': 'SDS assignment due'}]
-    >>> viewList(myToDo)
-    [{'day': 'Monday', 'time': '12pm', 'category': 'Yardwork', 'description': 'Water the garden'}, {'day': 'Wednesday', 'time': '11:59pm', 'category':
-    'School', 'description': 'SDS assignment due'}]
-    """
-    if len(todo_list) == 0: 
-        print("Your to do list is empty.")
-    else: 
-        return(todo_list)
-
 def main() ->  None: 
     """ This function handles user inputs and operations for the to do list 
     """
-    todo_list = []
+    todo_list = [] # creating to do list
 
     while True: 
         print("\nTO DO LIST")
@@ -130,9 +122,10 @@ def main() ->  None:
         print("3. View Tasks")
         print("4. Quit")
 
-        choice = input("Choose an option: ")
+        choice = input("Choose an option: ") # user is prompted to pick a number that matches what they want to do
 
-        if choice == "1": 
+        if choice == "1": # adding task
+
             day = input("Day: ")
             time = input("Time (ex: 2pm, 1:30pm): ")
             category = input("Category: ")
@@ -143,34 +136,37 @@ def main() ->  None:
 
             print("Task added.")
         
-        elif choice == "2": 
+        elif choice == "2": # removing task
 
-            if len(todo_list) == 0: 
+            if len(todo_list) == 0: # in case there's nothing in the list
                 print("Your to do list is empty. There is nothing to remove.")
             else: 
+                # print's tasks in numerical order for user to select which number they want to remove
                 print("/nCurrent Tasks:")
-
                 for i, task in enumerate(todo_list, start=1):
+                    # f is a "formatted string literal" or "f-string" 
                     print(f"{i}. {task['day']} {task['time']} - "
                           f"{task['category']} - {task['description']}")
                 
-                index = int(input("Enter task number to remove: "))
-                removeTask(todo_list, index)
+                index = int(input("Enter task number to remove: ")) # user selects which number to delete
+                
+                removeTask(todo_list, index) # removing task
         
-        elif choice == "3": 
+        elif choice == "3": # viewing tasks
 
-            if len(todo_list) == 0: 
+            if len(todo_list) == 0: # in case there's northing in the list
                 print("Your to do list is empty.")
             else: 
+                # same as above under choice 2
                 for i, task in enumerate(todo_list, start=1):
                     print(f"{i}. {task['day']} {task['time']} - "
                           f"{task['category']} - {task['description']}")
         
-        elif choice == "4": 
+        elif choice == "4": # quits the loop
             print("Goodbye!")
             break
         
-        else: 
+        else: # in case user inputs something else
             print("Invalid option. Please try again.")
     
 if __name__ == "__main__":
